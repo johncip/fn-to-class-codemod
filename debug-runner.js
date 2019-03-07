@@ -1,4 +1,4 @@
-const transform = require('./to-es6-class.js')
+const fnToClass = require('./fn-to-class.js')
 
 const source = `
 /*
@@ -49,4 +49,4 @@ extend(Block.prototype, {
 export default Block
 `
 
-transform({ file: { source } })
+fnToClass({ file: { source } })

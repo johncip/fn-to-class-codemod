@@ -92,7 +92,7 @@ function buildClassDeclaration (j, path, superName = null) {
   )
 }
 
-const transform = (file, api) => {
+const fnToClass = (file, api) => {
   const j = api.jscodeshift
   const root = j(file.source)
   let superClasses = {}
@@ -164,8 +164,7 @@ const transform = (file, api) => {
       }
     })
 
-
   return root.toSource()
 }
 
-module.exports = transform
+module.exports = fnToClass
