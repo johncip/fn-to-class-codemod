@@ -65,8 +65,6 @@ function getPepClassNames (node) {
 
 /*
  * Builds a method definition for attaching to a class.
- *
- * See: https://github.com/benjamn/ast-types/blob/master/def/es6.ts#L117
  */
 function buildMethodDefinition (j, key, node, isStatic = false) {
   return j.methodDefinition(
@@ -80,8 +78,6 @@ function buildMethodDefinition (j, key, node, isStatic = false) {
 
 /*
  * Builds a class declaration with optional superclass name.
- *
- * See: https://github.com/benjamn/ast-types/blob/master/def/es6.ts#L181
  */
 function buildClassDeclaration (j, path, superName = null) {
   return j.classDeclaration(
@@ -104,7 +100,7 @@ const transform = (file, api) => {
 
   // extends(Foo.prototype, Bar.prototype)
   //   -> ∅
-  //    & store mapping from 'Foo' to 'Bar'
+  //    & store mapping {Foo : Bar}
   root
     .find(j.ExpressionStatement, node => isProtoExtendsProto(node))
     .forEach(path => {
@@ -114,7 +110,7 @@ const transform = (file, api) => {
     })
 
   // function Foo ()
-  //   -> class Foo extends Bar
+  //   -> class Foo extends Bar (given mapping {Foo : Bar})
   //    & store mapping from 'Foo' to path
   root
     .find(
@@ -131,10 +127,10 @@ const transform = (file, api) => {
       })
     })
 
-  // extends(Foo.prototype, { fns })
-  //   - each fn -> ∅
-  //   - attach each fn as a method to class
-  //   - whole expression -> ∅ if { fns } becomes empty
+  // extends(Foo.prototype, { fns, nonFns })
+  //   -> ∅ (each fn)
+  //   -> ∅ (whole expression, if {...} becomes empty)
+  //    & attach each fn as a method to class
   root
     .find(
       j.ExpressionStatement,
