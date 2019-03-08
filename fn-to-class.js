@@ -76,7 +76,8 @@ function buildMethodDefinition (j, key, node, isStatic = false) {
 }
 
 /*
- * Builds a class declaration with optional superclass name.
+ * Builds a class declaration with optional superclass name and populates the
+ * constructor from a given function.
  */
 function buildClassDeclaration (j, path, superName = null) {
   return j.classDeclaration(
