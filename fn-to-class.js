@@ -68,7 +68,6 @@ function getPepClassNames (node) {
  */
 function buildMethodDefinition (j, key, node, isStatic = false) {
   return j.methodDefinition(
-    j,
     'method',
     key,
     j.functionExpression(null, node.params, node.body),
@@ -84,6 +83,7 @@ function buildClassDeclaration (j, path, superName = null) {
     path.value.id,
     j.classBody([
       buildMethodDefinition(
+        j,
         j.identifier('constructor'),
         path.value
       )
@@ -120,8 +120,8 @@ const fnToClass = (file, api) => {
     .forEach(path => {
       const name = path.value.id.name
       const superName = superClasses[name]
-      j(path).replaceWith(path2 => {
-        const built = buildClassDeclaration(path2, superName)
+      j(path).replaceWith(path => {
+        const built = buildClassDeclaration(j, path, superName)
         classNodes[name] = built
         return built
       })
@@ -152,6 +152,7 @@ const fnToClass = (file, api) => {
 
           classBody.body.push(
             buildMethodDefinition(
+              j,
               j.identifier(property.key.name),
               property.value
             )
