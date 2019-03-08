@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "doesn't do much yet",
   "scripts": {
+    "test": "npx jest"
   },
   "main": "index.js",
   "author": "johncip",
@@ -19,6 +20,7 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint_d": "^7.3.0",
+    "jest": "^24.3.1",
     "node-watch": "^0.6.0",
     "prettier": "^1.16.4"
   },
