@@ -1,29 +1,16 @@
 const fnToClass = require('./fn-to-class')
 
-function runInlineTest (module, options, input, expectedOutput) {
-  const transform = module.default ? module.default : module
+function normalize (str) {
+  return str.trim().replace(/\s+/gm, ' ')
+}
+
+function expectTransform (input, expectedOutput, options = {}) {
   let jscodeshift = require('jscodeshift')
-  if (module.parser) {
-    jscodeshift = jscodeshift.withParser(module.parser)
-  }
+  const api = { jscodeshift, stats: () => {} }
+  const output = fnToClass({ source: input }, api, options)
 
-  const normalizeWhitespace = str => str.trim().replace(/\s+/gm, ' ')
-
-  const output = transform(
-    input,
-    { jscodeshift, stats: () => {} },
-    options || {}
-  )
-
-  expect(normalizeWhitespace(output)).toEqual(
-    normalizeWhitespace(expectedOutput)
-  )
+  expect(normalize(output))
+    .toEqual(normalize(expectedOutput))
 }
 
-function testInline (testName, input, expectedOutput) {
-  it(testName, () => {
-    runInlineTest(fnToClass, {}, { source: input }, expectedOutput)
-  })
-}
-
-module.exports = { testInline }
+module.exports = { expectTransform }
