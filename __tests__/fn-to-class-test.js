@@ -10,7 +10,7 @@ describe('fn-to-class', () => {
     )
   })
 
-  it('constructor fn + extend proto with proto -> class decl with superclass', () => {
+  it('constructor fn, extend proto w/ proto -> class decl with extends keyword', () => {
     expectTransform(
       `
         function Apple() {}
@@ -24,7 +24,7 @@ describe('fn-to-class', () => {
     )
   })
 
-  it('constructor fn + extend proto with fns -> class with methods', () => {
+  it('constructor fn, extend proto with fns -> class with methods', () => {
     expectTransform(
       `
         function Apple() {}
@@ -38,6 +38,26 @@ describe('fn-to-class', () => {
           constructor() {}
           isRed() { return true }
           isBlue() { return false }
+        }
+      `
+    )
+  })
+
+  it('constructor fn, extend proto w/ proto, "super" fn call -> class with super()', () => {
+    expectTransform(
+      `
+        function Apple() {
+          Fruit.call(this, 'ripe')
+          this.size = 'small'
+        }
+        extend(Apple.prototype, Fruit.prototype)
+      `,
+      `
+        class Apple extends Fruit {
+          constructor() {
+            super('ripe')
+            this.size = 'small'
+          }
         }
       `
     )

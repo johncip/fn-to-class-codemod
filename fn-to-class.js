@@ -166,6 +166,34 @@ const fnToClass = (file, api) => {
       }
     })
 
+  // Bar.call(this, ...)
+  //   -> super(...)
+  //    - if bar is in the list of superclasses
+  root
+    .find(
+      j.MethodDefinition,
+      { key: { name: 'constructor' } }
+    )
+    .forEach(path => {
+      j(path)
+        .find(
+          j.CallExpression,
+          {
+            callee: { property: { name: 'call' } },
+            arguments: [{ type: 'ThisExpression' }]
+          }
+        )
+        .filter(path =>
+          Object.values(superClasses).includes(path.value.callee.object.name)
+        )
+        .replaceWith(path =>
+          j.callExpression(
+            j.super(),
+            path.value.arguments.slice(1)
+          )
+        )
+    })
+
   return root.toSource()
 }
 
